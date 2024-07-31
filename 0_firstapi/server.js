@@ -60,9 +60,29 @@ app.delete('/api/fruit/:id', async (req,res)=>{
     console.log('result : ' + res.statusCode);
 });
 
-// 구현 예정
-//app.put('/api/fruit/:id', async (req,res)=>{
-//});
+// 과일정보 업데이트
+app.put('/api/fruit/:id', async (req,res)=>{
+    const existingFruit = await  db.Fruit.findById(req.params.id);
+    
+    if (!existingFruit) {
+    res.status(400);
+    throw new Error('Fruit not found');
+    }
+/*
+    // swagger autogen 플러그인 사용할 때만 참고용으로 주석 품, 스웨거 UI에 requst body 띄워지도록 하는 용도
+    const newFruit = new db.Fruit({
+        name: req.body.name,
+        type: req.body.type,
+        color: req.body.color,
+        isDry: req.body.isDry,
+        imageUrl: req.body.imageUrl
+    });
+*/
+    const updatedFruit = await db.Fruit.findByIdAndUpdate(req.params.id, req.body, { new: true }
+    );
+    
+    res.status(200).json(updatedFruit);
+});
 
 
 // 스웨거 사용
